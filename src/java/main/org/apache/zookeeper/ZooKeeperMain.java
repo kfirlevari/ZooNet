@@ -44,6 +44,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.zookeeper.cli.AddAuthCommand;
+import org.apache.zookeeper.cli.ZNCloseCommand;
+import org.apache.zookeeper.cli.ZNConnectCommand;
 import org.apache.zookeeper.cli.CliCommand;
 import org.apache.zookeeper.cli.CloseCommand;
 import org.apache.zookeeper.cli.CreateCommand;
@@ -80,7 +82,7 @@ public class ZooKeeperMain {
     protected int commandCount = 0;
     protected boolean printWatches = true;
 
-    protected ZooKeeper zk;
+    protected ZooNet zk;
     protected String host = "";
 
     public boolean getPrintWatches( ) {
@@ -93,6 +95,9 @@ public class ZooKeeperMain {
         commandMap.put("redo","cmdno");
         commandMap.put("printwatches", "on|off");
         commandMap.put("quit", "");
+
+        new ZNCloseCommand().addToMap(commandMapCli);
+        new ZNConnectCommand().addToMap(commandMapCli);
 
         new CloseCommand().addToMap(commandMapCli);
         new CreateCommand().addToMap(commandMapCli);
@@ -261,24 +266,21 @@ public class ZooKeeperMain {
     }
 
     protected String getPrompt() {       
-        return "[zk: " + host + "("+zk.getState()+")" + " " + commandCount + "] ";
+        return "["+zk.getStatesString()+" " + commandCount + "] ";
     }
 
     public static void printMessage(String msg) {
         System.out.println("\n"+msg);
     }
 
-    protected void connectToZK(String newHost) throws InterruptedException, IOException {
-        if (zk != null && zk.getState().isAlive()) {
-            zk.close();
-        }
+    protected void connectZK(String zkid, String newHost) throws InterruptedException, IOException {
         host = newHost;
         boolean readOnly = cl.getOption("readonly") != null;
         if (cl.getOption("secure") != null) {
             System.setProperty(ZKClientConfig.SECURE_CLIENT, "true");
             System.out.println("Secure connection is enabled");
         }
-        zk = new ZooKeeper(host,
+        zk.connect(zkid, host,
                  Integer.parseInt(cl.getOption("timeout")),
                  new MyWatcher(), readOnly);
     }
@@ -293,14 +295,18 @@ public class ZooKeeperMain {
     public ZooKeeperMain(String args[]) throws IOException, InterruptedException {
         cl.parseOptions(args);
         System.out.println("Connecting to " + cl.getOption("server"));
-        connectToZK(cl.getOption("server"));
-        //zk = new ZooKeeper(cl.getOption("server"),
-//                Integer.parseInt(cl.getOption("timeout")), new MyWatcher());
+        zk = new ZooNet(cl.getOption("server"), 
+                Integer.parseInt(cl.getOption("timeout")), (Watcher)new MyWatcher(), 
+                Boolean.parseBoolean(cl.getOption("readOnly")));
     }
 
-    public ZooKeeperMain(ZooKeeper zk) {
+    public ZooKeeperMain(ZooNet zk) {
       this.zk = zk;
     }
+    
+    public ZooKeeperMain(ZooKeeper zk) {
+    	// Used only in tests.
+	}
 
     void run() throws KeeperException, IOException, InterruptedException {
         if (cl.getCommand() == null) {
@@ -319,7 +325,7 @@ public class ZooKeeperMain {
                     consoleC.getConstructor().newInstance();
 
                 Object completor =
-                    completorC.getConstructor(ZooKeeper.class).newInstance(zk);
+                    completorC.getConstructor(ZooNet.class).newInstance(zk);
                 Method addCompletor = consoleC.getMethod("addCompleter",
                         Class.forName("jline.console.completer.Completer"));
                 addCompletor.invoke(console, completor);
@@ -665,9 +671,9 @@ public class ZooKeeperMain {
             }
         } else if (cmd.equals("connect")) {
             if (args.length >=2) {
-                connectToZK(args[1]);
+                connectZK(args[1], args[2]);
             } else {
-                connectToZK(host);                
+                connectZK(ZooNet.LOCAL_ZKID, host);                
             }
         } 
         

@@ -1,0 +1,44 @@
+# ZooNetTest expects the following config file structure:
+##########################################################
+
+// A connection string of the ZK that servers the test, and a perfix in that ZK for the test.
+// Note - currently the test should run from the same server as the meta data ZK.
+/////////////////////////////////////////////////////////////////////////////////////////////
+metaDataZK=localhost:2111
+testPrefix=/sysTest
+printOnlyForGraph=true // for graph-ready output 
+burstSize=2 // Number of operations from the same ZK to be executed one after another.
+outstandingLimit=100 // Max number of outstanding operations per single client
+binsNumber=100 // number of buckets in latency measurements
+testIP=<MDZK IP if running test from MDZK>
+// ZK Servers are set by
+// ZKInfo_Servers=<zk name>|list of <[instance container name]>:idNumberOfServer:<"observer"/"participant">;...
+// The idea is to give the user the ability to set each ZK server at a specific instance container.
+// idNumberOfServer - must be unique per ZK per Container (for each ZK, for each container, each server must have different id number).
+//
+// In the following example we have 3 ZKs, each of which has quorum of 3 and 2 observers.
+// The quorum placed on the same container, along with 2 observers of the other ZKs.
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ZKInfo_Servers=ZK1|ic_1#11#participant#ip;ic_1:12:participant;ic_1:13:participant;ic_2:14:observer;ic_3:15:observer
+ZKInfo_Servers=ZK2|ic_2:21:participant;ic_2:22:participant;ic_2:23:participant;ic_1:24:observer;ic_3:25:observer
+ZKInfo_Servers=ZK3|ic_3:31:participant;ic_3:32:participant;ic_3:33:participant;ic_1:34:observer;ic_2:35:observer
+
+// For each app:
+// AppInfo=<app name (for debug)>|
+//		  <%read>-<%local>|
+//		  <bytes size>|
+//		  <#appClients>|
+//		  <Local ZK name>-[containers:idNumberOfServer list]| -- for the local ZK
+//		  [container names]| -- from which the clients run
+//		  <Remote ZK name>-[containers:idNumberOfServer list] list -- for each remote ZK, list of containers, lists of different ZKs separated by ";"
+// The test will create #appClients clients, each of which will be connected to the ZK by the given ZK name.
+// Each client will perform actions according to the percentages stated for that app.
+// After ZK name there is a comma separated list of containers names. The clients will be connected to that ZK,
+// and as a connection string they will get a list of servers that run on those containers.
+// The last container list before the remote ZKs is the container in which the clients will be created (evenly amount all containers).
+// Remote ZKs are ZKs for remote actions.
+// Examples:
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+AppInfo=AppNameA_1|70-90|64|120|ZK1-ic_1:11,ic_1:12|ic_A1,ic_A2|ZK2-ic_1:4;ZK3-ic_1:4 (i.e., 120 clients will be connected to ZK1's servers that run on ic_1 and ic_2.)
+AppInfo=AppNameB_1|70-90|64|120|ZK2-ic_2:21,ic_2:23|ic_B|ZK1-ic_2:4;ZK3-ic_2:5
+

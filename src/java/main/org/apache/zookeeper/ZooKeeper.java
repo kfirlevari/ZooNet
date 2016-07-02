@@ -209,6 +209,10 @@ public class ZooKeeper {
         if (reconfigMode) clientCnxnSocket.testableCloseSocket();
     }
 
+    public ZooKeeper getClientRef(){
+        return new ZooKeeper(this);
+    }
+    
     public ZooKeeperSaslClient getSaslClient() {
         return cnxn.zooKeeperSaslClient;
     }
@@ -1203,6 +1207,13 @@ public class ZooKeeper {
             throws IOException {
         this(connectString, sessionTimeout, watcher, sessionId, sessionPasswd,
                 canBeReadOnly, createDefaultHostProvider(connectString));
+    }
+
+    public ZooKeeper(ZooKeeper zk) {
+        this.clientConfig =  zk.clientConfig;
+        watchManager =  zk.watchManager;
+        hostProvider =  zk.hostProvider;
+        cnxn =  zk.cnxn;
     }
 
     // default hostprovider

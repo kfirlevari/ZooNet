@@ -22,11 +22,12 @@ import java.util.Collections;
 import java.util.List;
 
 import jline.console.completer.Completer;
+import jline.internal.Log;
 
 class JLineZNodeCompleter implements Completer {
-    private ZooKeeper zk;
+    private ZooNet zk;
 
-    public JLineZNodeCompleter(ZooKeeper zk) {
+    public JLineZNodeCompleter(ZooNet zk) {
         this.zk = zk;
     }
 
@@ -42,7 +43,7 @@ class JLineZNodeCompleter implements Completer {
             }
         }
 
-        if (token.startsWith("/")){
+        if (token.contains("/")){
             return completeZNode( buffer, token, candidates);
         }
         return completeCommand(buffer, token, candidates);
@@ -62,13 +63,14 @@ class JLineZNodeCompleter implements Completer {
     private int completeZNode( String buffer, String token,
             List<String> candidates)
     {
-        String path = token;
+        String path = token.substring(token.indexOf('~')+1);
+        String ZKID = token.indexOf('~') == -1 ? "" : token.substring(0, token.indexOf('~')+1);
         int idx = path.lastIndexOf("/") + 1;
         String prefix = path.substring(idx);
         try {
             // Only the root path can end in a /, so strip it off every other prefix
             String dir = idx == 1 ? "/" : path.substring(0,idx-1);
-            List<String> children = zk.getChildren(dir, false);
+            List<String> children = zk.getChildren(ZKID+dir, false);
             for (String child : children) {
                 if (child.startsWith(prefix)) {
                     candidates.add( child );

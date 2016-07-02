@@ -23,13 +23,14 @@ import java.util.Map;
 import org.apache.commons.cli.ParseException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.ZooNet;
 
 /**
  * base class for all CLI commands
  */
 abstract public class CliCommand {
 
-    protected ZooKeeper zk;
+    protected ZooNet zk;
     protected PrintStream out;
     protected PrintStream err;
     private String cmdStr;
@@ -69,7 +70,15 @@ abstract public class CliCommand {
      * @param zk the zookeper instance
      */
     public void setZk(ZooKeeper zk) {
-        this.zk = zk;
+    	// Used only in testSortedLs
+    }
+    
+    /**
+     * set the zookeper instance
+     * @param zk the zookeper instance
+     */
+    public void setZk(ZooNet zn) {
+        this.zk = zn;
     }
 
     /**

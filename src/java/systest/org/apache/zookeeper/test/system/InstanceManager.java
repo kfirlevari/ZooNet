@@ -164,6 +164,34 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
             zk.getChildren(statusNode, this, this, null);
         }
     }
+   
+    synchronized public void assignSpecificInstance(String icName, String name, Class<? extends Instance> clazz, String params) 
+            throws NoAvailableContainers, DuplicateNameException, InterruptedException, KeeperException {
+        String instanceSpec = clazz.getName() + ' ' + params;
+        if (instanceToAssignment.get(name) != null) {
+            throw new DuplicateNameException(name + " already exists");
+        }
+        Assigned a = new Assigned(icName, 0); // In direct assigning we do not use weights
+        instanceToAssignment.put(name, a);
+        HashSet<Assigned> as = assignments.get(icName);
+        if (as == null) {
+            as = new HashSet<Assigned>();
+            assignments.put(icName, as);
+        }
+        as.add(a);
+        KeeperException lastException = null;
+        for(int i = 0; i < 30; i++) {
+            try {
+                zk.create(assignmentsNode + '/' + icName + '/' + name, instanceSpec.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+                return;
+            } catch (KeeperException e) {
+                lastException = e;
+            }
+            Thread.sleep(1000);
+        }
+        throw lastException;
+    }
+        
     synchronized public String assignInstance(String name, Class<? extends Instance> clazz, String params, int weight) throws NoAvailableContainers, DuplicateNameException, InterruptedException, KeeperException {
         if (weight < 1) {
             // if the weights are not above zero, things will get messed up
@@ -220,6 +248,7 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
             } catch (KeeperException e) {
                 lastException = e;
             }
+            Thread.sleep(200);
         }
         throw lastException;
     }
