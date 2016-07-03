@@ -1,4 +1,4 @@
-ZooNet - Modular Composition of ZooKeepers.
+ZooNet - Modular Composition of ZooKeepers
 ============
  ZooNet is a prototype of our modular composition concept over ZooKeeper. ZooNet allows users to compose multiple ZooKeepers 
  ensembles in a consistent fashion, facilitating applications that execute in multiple regions. In ZooNet, clients that 
