@@ -7,7 +7,7 @@ ZooNet - Modular Composition of ZooKeepers
 
 ZooNet appeared in [Usenix ATC'16](https://www.usenix.org/conference/atc16/technical-sessions/presentation/lev-ari), the paper can be found [here](http://kfirlevari.com/publication/download/modular-composition-of-coordination-services).
 
-
+Please see the following class for the main logic: [ZooNet.java](https://github.com/kfirlevari/ZooNet/blob/trunk/src/java/main/org/apache/zookeeper/ZooNet.java) .
 
 ---------------
 
