@@ -19,9 +19,9 @@ testIP=<MDZK IP if running test from MDZK>
 // In the following example we have 3 ZKs, each of which has quorum of 3 and 2 observers.
 // The quorum placed on the same container, along with 2 observers of the other ZKs.
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-ZKInfo_Servers=ZK1|ic_1#11#participant#ip;ic_1:12:participant;ic_1:13:participant;ic_2:14:observer;ic_3:15:observer
-ZKInfo_Servers=ZK2|ic_2:21:participant;ic_2:22:participant;ic_2:23:participant;ic_1:24:observer;ic_3:25:observer
-ZKInfo_Servers=ZK3|ic_3:31:participant;ic_3:32:participant;ic_3:33:participant;ic_1:34:observer;ic_2:35:observer
+ZKInfo_Servers=ZK1|ic_1:11:participant:ip;ic_1:12:participant:ip;ic_1:13:participant:ip;ic_2:14:observer:ip;ic_3:15:observer:ip
+ZKInfo_Servers=ZK2|ic_2:21:participant:ip;ic_2:22:participant:ip;ic_2:23:participant:ip;ic_1:24:observer:ip;ic_3:25:observer:ip
+ZKInfo_Servers=ZK3|ic_3:31:participant:ip;ic_3:32:participant:ip;ic_3:33:participant:ip;ic_1:34:observer:ip;ic_2:35:observer:ip
 
 // For each app:
 // AppInfo=<app name (for debug)>|
