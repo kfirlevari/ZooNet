@@ -9,7 +9,24 @@ ZooNet appeared in [Usenix ATC'16](https://www.usenix.org/conference/atc16/techn
 
 Please see the following class for the main logic: [ZooNet.java](https://github.com/kfirlevari/ZooNet/blob/trunk/src/java/main/org/apache/zookeeper/ZooNet.java) .
 
-If you wish to run ZooNet's systest, please see [this](https://github.com/kfirlevari/ZooNet/blob/trunk/bin/runZooNetSystest.sh) reference script.
+---------------
+
+In order to run ZooNet's systest, run the following commands:
+* "ant jar compile-test" (from ZK base dir).
+* "ant jar" (from "src/contrib/fatjar").
+* "./bin/runZooNetSystest.sh" (from ZK base dir). This script is found [here](https://github.com/kfirlevari/ZooNet/blob/trunk/bin/runZooNetSystest.sh).
+
+After initialization, you'll see the following printouts once every 6 sec (of throughput and latency percentiles, per every application):
+
+[app name]	
+
+[# of local read requests]	[# of local update requests]	[# of remote read requests]	[# of remote update requests]	
+
+Meadian:	[local reads, in ms]	[local updates, in ms]	[remote reads, in ms]	[remote updates, in ms]
+
+0.95:	[local reads, in ms]	[local updates, in ms]	[remote reads, in ms]	[remote updates, in ms]
+
+0.99:	[local reads, in ms]	[local updates, in ms]	[remote reads, in ms]	[remote updates, in ms]
 
 ---------------
 
