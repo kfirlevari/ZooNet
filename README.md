@@ -9,6 +9,8 @@ ZooNet appeared in [Usenix ATC'16](https://www.usenix.org/conference/atc16/techn
 
 Please see the following class for the main logic: [ZooNet.java](https://github.com/kfirlevari/ZooNet/blob/trunk/src/java/main/org/apache/zookeeper/ZooNet.java) .
 
+If you wish to run ZooNet's systest, please see [this](https://github.com/kfirlevari/ZooNet/blob/trunk/bin/runZooNetSystest.sh) reference script.
+
 ---------------
 
 For the latest information about Apache ZooKeeper, please visit:
