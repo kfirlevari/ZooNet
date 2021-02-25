@@ -193,7 +193,7 @@ public class ZooNet extends ZooKeeper {
         if (path.charAt(0) != '/'){
             newZKID = path.substring(0, path.indexOf('~'));
             params.path = path.substring(path.indexOf('/'));
-            params.zk = this.remoteZKIDToConnection.get(lastZKID);
+            params.zk = this.remoteZKIDToConnection.get(newZKID);
         } else {
             newZKID = LOCAL_ZKID;
             params.zk = this.remoteZKIDToConnection.get(LOCAL_ZKID);
@@ -216,7 +216,7 @@ public class ZooNet extends ZooKeeper {
         String newZKID = null;
         if (!zkid.isEmpty()){
             newZKID = zkid;
-            params.zk = this.remoteZKIDToConnection.get(lastZKID);
+            params.zk = this.remoteZKIDToConnection.get(newZKID);
         } else {
             newZKID = LOCAL_ZKID;
             params.zk = this.remoteZKIDToConnection.get(LOCAL_ZKID);
